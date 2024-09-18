@@ -1,64 +1,89 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useEffect, useState } from "react";
+import { useUsersDatabase } from "../../database/useUsersDatabase";
+import { ActivityIndicator, Text, View } from "react-native";
 
-const AuthContex = createContext({});
+const AuthContext = createContext({});
 
 export const Role = {
-  SUPER: "SUPER",
-  ADMIN: "ADMIN",
-  USER: "USER",
+  SUPER: 'SUPER',
+  ADM: 'ADM',
+  USER: 'USER',
 };
+
 export function AuthProvider({ children }) {
   const [user, setUser] = useState({
-    autenticaded: null,
+    autenticated: false,
     user: null,
     role: null,
   });
 
+  const { authUser } = useUsersDatabase();
+
+  useEffect(() => {
+    const loadStorageData = async () => {
+      const storageUser = await AsyncStorage.getItem('@payment:user');
+
+      if (storageUser) {
+        setUser({
+          autehnticated: true,
+          user: JSON.parse(storageUser),
+          role: JSON.parse(storageUser).role,
+        })
+      } else {
+        setUser({
+          autenticated: false,
+          user: null,
+          role: null
+        });
+      };
+    };
+
+    loadStorageData();
+  }, []);
+
+
   const signIn = async ({ email, password }) => {
-    if (email === "super@email.com" && password === "Super123!") {
-      setUser({
-        autenticaded: true,
-        user: { id: 1, name: "Super", email },
-        role: Role.SUPER,
-      });
-    } else if (email === "adm@email.com" && password === "Adm123!") {
-      setUser({
-        autenticaded: true,
-        user: { id: 2, name: "Administrador", email },
-        role: Role.ADMIN,
-      });
-    } else if (email === "user@email.com" && password === "User123!") {
-      setUser({ 
-        autenticaded: true,
-        user: { id: 3, name: "Usuário Comun", email },
-        role: Role.USER,
-       });
-    } else {
-        setUser({ 
-            autenticaded: false, user: null, role: null });
-        }
-    
+    const response = await authUser({ email, password });
+    if (!response) {
+      setUser({ autenticated: false, user: null, role: null });
+      return;
+    }
+
+    await AsyncStorage.setItem("@payment:user", JSON.stringify(user));
+
+    setUser({ autenticated: true, user: response, role: response.role });
   };
 
   const signOut = async () => {
-    setUser({});
+    await AsyncStorage.removeItem("@payment:user");
+    setUser({
+      autenticated: false,
+      user: null,
+      role: null
+    });
   };
 
-  useEffect(() => {
-    console.log("AuthProvider: ", user);
-  }, [user]);
+
+  if (user?.autenticated === null) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <Text>Carregando Dados do Usuário</Text>
+        <ActivityIndicator />
+      </View>
+    );
+  }
 
   return (
-    <AuthContex.Provider value={{ user, signIn, signOut }}>
+    <AuthContext.Provider value={{ user, signIn, signOut }}>
       {children}
-    </AuthContex.Provider>
+    </AuthContext.Provider>
   );
 }
 
 export function useAuth() {
-  const context = useContext(AuthContex);
+  const context = React.useContext(AuthContext);
   if (!context) {
-    throw new Error("useAuth must be used within an AuthProvider");
+    throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
 }
