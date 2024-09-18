@@ -1,6 +1,7 @@
 import React, { createContext, useEffect, useState } from "react";
 import { useUsersDatabase } from "../../database/useUsersDatabase";
 import { ActivityIndicator, Text, View } from "react-native";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const AuthContext = createContext({});
 
@@ -25,7 +26,7 @@ export function AuthProvider({ children }) {
 
       if (storageUser) {
         setUser({
-          autehnticated: true,
+          autenticated: true,
           user: JSON.parse(storageUser),
           role: JSON.parse(storageUser).role,
         })
@@ -33,7 +34,7 @@ export function AuthProvider({ children }) {
         setUser({
           autenticated: false,
           user: null,
-          role: null
+          role: null,
         });
       };
     };
@@ -68,7 +69,7 @@ export function AuthProvider({ children }) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <Text>Carregando Dados do Usuário</Text>
-        <ActivityIndicator />
+        <ActivityIndicator size="large"/>
       </View>
     );
   }

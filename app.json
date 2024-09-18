@@ -5,7 +5,7 @@
     "scheme": "react-native-expo-2024-karen",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./src/assets/icon.png",
+    "icon": "./src/assets/hairhaven.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./src/assets/hairhaven.png",

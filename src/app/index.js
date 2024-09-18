@@ -20,7 +20,7 @@ export default function App() {
       await signIn({ email, password });
       console.log("Entrou");
     } catch (error) {
-      console.log("Erro ao entrar");
+      console.log("Erro ao entrar", error);
       Alert.alert("⚠️", "E-mail ou senha inválidos");
     }
   }
