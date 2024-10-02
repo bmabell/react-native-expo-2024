@@ -2,6 +2,7 @@ import React, { createContext, useEffect, useState } from "react";
 import { useUsersDatabase } from "../../database/useUsersDatabase";
 import { ActivityIndicator, Text, View } from "react-native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { router } from "expo-router";
 
 const AuthContext = createContext({});
 
@@ -29,7 +30,7 @@ export function AuthProvider({ children }) {
           autenticated: true,
           user: JSON.parse(storageUser),
           role: JSON.parse(storageUser).role,
-        })
+        });
       } else {
         setUser({
           autenticated: false,
@@ -50,19 +51,20 @@ export function AuthProvider({ children }) {
       return;
     }
 
-    await AsyncStorage.setItem("@payment:user", JSON.stringify(user));
+    await AsyncStorage.setItem("@payment:user", JSON.stringify(response));
 
     setUser({ autenticated: true, user: response, role: response.role });
   };
 
   const signOut = async () => {
     await AsyncStorage.removeItem("@payment:user");
+    router.back("/");
     setUser({
-      autenticated: false,
-      user: null,
-      role: null
-    });
-  };
+        autenticated: false,
+        user: null,
+        role: null,
+    })
+};
 
 
   if (user?.autenticated === null) {
