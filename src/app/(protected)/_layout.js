@@ -62,6 +62,12 @@ const DrawerLayout = () => {
             headerTitle: "Pagamentos",
             drawerIcon: () => <Ionicons name='diamond-outline' size={20} color="black" />,
           }} />
+          <Drawer.Screen name='save'
+          options={{
+            drawerLabel: "Salvos",
+            headerTitle: "Salvos",
+            drawerIcon: () => <Ionicons name='bookmark-outline' size={20} color="black" />,
+          }} />
       </Drawer>
 
     </GestureHandlerRootView>

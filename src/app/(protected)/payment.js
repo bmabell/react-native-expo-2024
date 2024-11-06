@@ -1,147 +1,138 @@
 import { router } from "expo-router";
-import { Button, StyleSheet, Text, TextInput, View } from "react-native";
+import { Button, KeyboardAvoidingView, Platform, StyleSheet, Text, TextInput, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Picker } from '@react-native-picker/picker';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import { z } from "zod";
+import { useAuth } from "../../hooks/Auth/index";
+
+const paymentSchema = z.object({
+    valor: z.number().gt(0),
+    user_id: z.number().int().positive(),
+    user_cadastro: z.number().int().positive(),
+    data_pagamento: z.date(),
+    observacao: z.string(),
+});
 
 export default function Payment() {
     const [valor, setValor] = useState("0,00");
-    const [sugestoes, setSugestoes] = useState(
-        [{
-            "id": 1,
-            "nome": "Pammi Tiernan"
-        }, {
-            "id": 2,
-            "nome": "Rebbecca Sales"
-        }, {
-            "id": 3,
-            "nome": "Claresta Tollfree"
-        }, {
-            "id": 4,
-            "nome": "Selma Washbrook"
-        }, {
-            "id": 5,
-            "nome": "Inness Rogans"
-        }, {
-            "id": 6,
-            "nome": "Luis Roswarne"
-        }, {
-            "id": 7,
-            "nome": "Pren McNair"
-        }, {
-            "id": 8,
-            "nome": "Zedekiah Lorence"
-        }, {
-            "id": 9,
-            "nome": "Valentina Fanshawe"
-        }, {
-            "id": 10,
-            "nome": "Markos Phare"
-        }, {
-            "id": 11,
-            "nome": "Cullan Heaphy"
-        }, {
-            "id": 12,
-            "nome": "Antoine Purkins"
-        }, {
-            "id": 13,
-            "nome": "Boot Lillgard"
-        }, {
-            "id": 14,
-            "nome": "Seamus Beards"
-        }, {
-            "id": 15,
-            "nome": "Ferrel Sprulls"
-        }, {
-            "id": 16,
-            "nome": "Bronson Mathen"
-        }, {
-            "id": 17,
-            "nome": "Yvor Raffeorty"
-        }, {
-            "id": 18,
-            "nome": "Hartwell Younghusband"
-        }, {
-            "id": 19,
-            "nome": "Lorrin Jeggo"
-        }, {
-            "id": 20,
-            "nome": "Jennee Krikorian"
-        }, {
-            "id": 21,
-            "nome": "Elyn Goghin"
-        }, {
-            "id": 22,
-            "nome": "Cynthie McArtan"
-        }, {
-            "id": 23,
-            "nome": "Krisha MacDuff"
-        }, {
-            "id": 24,
-            "nome": "Giralda Adamovsky"
-        }, {
-            "id": 25,
-            "nome": "Glyn Neame"
-        }, {
-            "id": 26,
-            "nome": "Modestine Ingyon"
-        }, {
-            "id": 27,
-            "nome": "Lucais Millin"
-        }, {
-            "id": 28,
-            "nome": "Floria McFarlan"
-        }, {
-            "id": 29,
-            "nome": "Caddric Ecclestone"
-        }, {
-            "id": 30,
-            "nome": "Shamus Semper"
-        }, {
-            "id": 31,
-            "nome": "Arlan Bruckman"
-        }, {
-            "id": 32,
-            "nome": "Thayne Engel"
-        }, {
-            "id": 33,
-            "nome": "Westbrook Ayto"
-        }, {
-            "id": 34,
-            "nome": "Baillie Duns"
-        }, {
-            "id": 35,
-            "nome": "Ewart Antonomolii"
-        }]
-    );
+    const [sugestoes, setSugestoes] = useState([
+        { "id": 1, "nome": "Shampoo" },
+        { "id": 2, "nome": "Condicionador" },
+        { "id": 3, "nome": "Máscara de tratamento" },
+        { "id": 4, "nome": "Acidificador" },
+        { "id": 5, "nome": "Pré-poo" }
+    ]);
     const [id, setId] = useState(1);
+    const [data, setData] = useState(new Date());
+    const [viewCalendar, setViewCalendar] = useState(false);
+    const [observacao, setObservacao] = useState("");
+    const valueRef = useRef();
+    const { user } = useAuth();
+
+    const handleCalendar = (event, selectedDate) => {
+        setData(selectedDate || data);
+        setViewCalendar(false);
+    };
+
+    useEffect(() => {
+        valueRef?.current?.focus();
+    }, []);
+
+    const handleChangeValor = (value) => {
+        setValor(value);
+    };
+
+    const convertValue = (value) => {
+        try {
+            let valorLimpo = value.replace(",", "").replace(".", "");
+            let valorConvertido = Number(valorLimpo) / 100;
+            if (valorConvertido === 0 || isNaN(valorConvertido)) {
+                setValor("0,00");
+                return 0;
+            }
+            return valorConvertido;
+        } catch (error) {
+            setValor("0,00");
+        }
+    };
+
+    const handleSubmit = async () => {
+        const payment = {
+            user_id: id,
+            user_cadastro: Number(user),
+            valor_pago: convertValue(valor),
+            data_pagamento: data,
+            observacao,
+        };
+
+        try {
+            const result = await paymentSchema.parseAsync(payment);
+            console.log(result);
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     return (
-        <View style={styles.content}>
-            <View style={styles.inputView}>
-                <Ionicons name="wallet-outline" size={24} color="black" />
-                <TextInput
-                    placeholder="Valor"
-                    keyboardType="decimal-pad"
-                    style={styles.inputValor}
-                    value={valor}
-                    onChangeText={setValor} />
+        <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : "height"}>
+            <View style={styles.content}>
+                <View style={styles.inputView}>
+                    <Ionicons name="wallet-outline" size={24} color="black" />
+                    <TextInput
+                        placeholder="Valor"
+                        keyboardType="decimal-pad"
+                        style={styles.inputValor}
+                        value={valor}
+                        onChangeText={handleChangeValor}
+                        ref={valueRef}
+                    />
+                </View>
+
+                <View style={styles.inputView}>
+                    <Picker
+                        selectedValue={id}
+                        onValueChange={(itemValue) => setId(itemValue)}
+                        style={styles.picker}
+                    >
+                        {sugestoes?.map((item) => (
+                            <Picker.Item key={item.id} label={item.nome} value={item.id} />
+                        ))}
+                    </Picker>
+                </View>
+
+                <View style={styles.inputView}>
+                    <Text onPress={() => setViewCalendar(true)} style={styles.inputCalendar}>
+                        {data.toLocaleDateString()}
+                    </Text>
+                    {viewCalendar && (
+                        <DateTimePicker
+                            value={data}
+                            onChange={handleCalendar}
+                            mode="date"
+                            display="default"
+                        />
+                    )}
+                </View>
+
+                <View style={styles.inputView}>
+                    <TextInput
+                        placeholder="Observações"
+                        style={styles.inputObservacao}
+                        value={observacao}
+                        onChangeText={setObservacao}
+                        multiline
+                    />
+                </View>
+
+                <View style={styles.contentButtons}>
+                    <Button title="Salvar" onPress={handleSubmit} />
+                    <Button title="Continuar" />
+                    <Button title="Cancelar" onPress={() => router.back()} />
+                </View>
             </View>
-            <View style={styles.inputView}>
-                <TextInput placeholder="Usuário" />
-            </View>
-            <View style={styles.inputView}>
-                <TextInput placeholder="Data" />
-            </View>
-            <View style={styles.inputView}>
-                <TextInput placeholder="Observações" />
-            </View>
-            <View style={styles.contentButtons}>
-                <Button title="Salvar" />
-                <Button title="Continuar" />
-                <Button title="Cancelar" onPress={() => router.back()} />
-            </View>
-        </View>
+        </KeyboardAvoidingView>
     );
 }
 
@@ -156,13 +147,36 @@ const styles = StyleSheet.create({
         borderColor: 'black',
         borderWidth: 1,
         width: "100%",
-        margin: 10,
+        marginVertical: 10, 
         alignItems: "center",
         flexDirection: "row",
+        padding: 10,
+    },
+    picker: {
+        width: "100%",
+        height: 50, 
     },
     contentButtons: {
         flexDirection: "row",
         gap: 10,
         justifyContent: "space-between",
+        marginTop: 20, 
+    },
+    inputCalendar: {
+        width: "100%",
+        textAlign: "center",
+        fontFamily: "regular",
+        fontSize: 20,
+        padding: 10,
+    },
+    inputObservacao: {
+        fontFamily: "regular",
+        fontSize: 16,
+        flex: 1,
+        lineHeight: 20,
+    },
+    inputValor: {
+        fontSize: 16,
+        flex: 1,
     },
 });
