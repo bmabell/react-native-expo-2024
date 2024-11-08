@@ -6,16 +6,20 @@ import { Picker } from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { z } from "zod";
 import { useAuth } from "../../hooks/Auth/index";
+import { useProductsDatabase } from "../../database/useProductsDatabase";
+import { useUsersDatabase } from "../../database/useUsersDatabase"
 
-const paymentSchema = z.object({
-    valor: z.number().gt(0),
+const productSchema = z.object({
+    peso: z.number().gt(0),
     user_id: z.number().int().positive(),
     user_cadastro: z.number().int().positive(),
-    data_pagamento: z.date(),
-    observacao: z.string(),
+    descricao: z.string(),
+    marca: z.string(),
+    categoria: z.string(),
+    especificacao: z.string(),
 });
 
-export default function Payment() {
+export default function Product() {
     const [valor, setValor] = useState("0,00");
     const [sugestoes, setSugestoes] = useState([
         { "id": 1, "nome": "Shampoo" },
@@ -30,6 +34,8 @@ export default function Payment() {
     const [observacao, setObservacao] = useState("");
     const valueRef = useRef();
     const { user } = useAuth();
+    const { createProduct } = useProductsDatabase();
+    const { getAllUsers } = useUsersDatabase();
 
     const handleCalendar = (event, selectedDate) => {
         setData(selectedDate || data);
@@ -59,17 +65,21 @@ export default function Payment() {
     };
 
     const handleSubmit = async () => {
-        const payment = {
+        const product = {
             user_id: id,
             user_cadastro: Number(user),
-            valor_pago: convertValue(valor),
-            data_pagamento: data,
-            observacao,
+            descricao,
+            peso: convertValue(valor),
+            marca,
+            categoria,
+            especificacao,
         };
 
         try {
-            const result = await paymentSchema.parseAsync(payment);
+            const result = await productSchema.parseAsync(product);
+            const { insertedID } = await createProduct(product);
             console.log(result);
+            console.log(insertedID);
         } catch (error) {
             console.log(error);
         }
@@ -147,20 +157,20 @@ const styles = StyleSheet.create({
         borderColor: 'black',
         borderWidth: 1,
         width: "100%",
-        marginVertical: 10, 
+        marginVertical: 10,
         alignItems: "center",
         flexDirection: "row",
         padding: 10,
     },
     picker: {
         width: "100%",
-        height: 50, 
+        height: 50,
     },
     contentButtons: {
         flexDirection: "row",
         gap: 10,
         justifyContent: "space-between",
-        marginTop: 20, 
+        marginTop: 20,
     },
     inputCalendar: {
         width: "100%",
