@@ -56,11 +56,11 @@ const DrawerLayout = () => {
             headerTitle: "Listagem",
             drawerIcon: () => <Ionicons name='list-outline' size={20} color="black" />,
           }} />
-        <Drawer.Screen name='payment'
+        <Drawer.Screen name='products'
           options={{
-            drawerLabel: "Pagamentos",
-            headerTitle: "Pagamentos",
-            drawerIcon: () => <Ionicons name='diamond-outline' size={20} color="black" />,
+            drawerLabel: "Produtos",
+            headerTitle: "Produtos",
+            drawerIcon: () => <Ionicons name='add-circle-outline' size={20} color="black" />,
           }} />
           <Drawer.Screen name='save'
           options={{

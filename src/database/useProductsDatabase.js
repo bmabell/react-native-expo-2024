@@ -1,6 +1,6 @@
 import { useSQLiteContext } from "expo-sqlite";
 
-export function useProductsDatabase () {
+export function useProductsDatabase() {
     const database = useSQLiteContext();
 
     async function createProduct({
@@ -14,7 +14,7 @@ export function useProductsDatabase () {
         especificacao,
     }) {
         const statment = await database.prepareAsync(`
-            INSERT INTO produtos ( user_id, user_cadastro, nome, descricao, peso, marca, categoria, especificacao) 
+            INSERT INTO products ( user_id, user_cadastro, nome, descricao, peso, marca, categoria, especificacao) 
             VALUES ($user_id, $user_cadastro, $nome, $descricao, $peso, $marca, $categoria, $especificacao); 
             `);
         try {
@@ -23,7 +23,7 @@ export function useProductsDatabase () {
                 $user_cadastro: user_cadastro,
                 $nome: nome,
                 $descricao: descricao,
-                $peso: peso, 
+                $peso: peso,
                 $marca: marca,
                 $categoria: categoria,
                 $especificacao: especificacao,
@@ -37,5 +37,21 @@ export function useProductsDatabase () {
             await statment.finalizeAsync();
         }
     }
-    return{createProduct};
+
+    async function getProducts() {
+        const statment = await database.prepareAsync(`
+            SELECET * FROM  produtos;
+            `);
+
+        try {
+            const products = await database.getAllAsync("SELECT * FROM products");
+            return products;
+        } catch (error) {
+            console.log(errpr);
+            throw error;
+        } finally {
+            await statment.finalizeAsync();
+        }
+    }
+    return { createProduct, getProducts };
 }
