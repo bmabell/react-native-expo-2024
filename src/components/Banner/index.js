@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Image, StyleSheet, Text, View } from "react-native";
+import React, { useState, useEffect } from "react";
+import { Image, StyleSheet, View } from "react-native";
 import PagerView from "react-native-pager-view";
 
 export function Banner() {
@@ -8,35 +8,61 @@ export function Banner() {
     const onPageSelected = (e) => {
         setPage(e.nativeEvent.position);
     };
+
+    useEffect(() => {
+        // Intervalo de 3 segundos para mudar a página automaticamente
+        const interval = setInterval(() => {
+            setPage((prevPage) => (prevPage + 1) % 3); // Rotaciona entre 0, 1 e 2
+        }, 3000);
+
+        // Limpeza do intervalo quando o componente for desmontado
+        return () => clearInterval(interval);
+    }, []);
+
+    useEffect(() => {
+        // Muda a página no PagerView a cada vez que o estado 'page' é atualizado
+        if (page !== undefined) {
+            pagerViewRef.current?.setPage(page); // Muda a página no PagerView
+        }
+    }, [page]);
+
+    const pagerViewRef = React.useRef(null); // Referência do PagerView
+
     return (
         <View style={styles.container}>
-            <PagerView initialPage={0} style={styles.content} onPageSelected={onPageSelected}>
+            <PagerView
+                ref={pagerViewRef}
+                initialPage={0}
+                style={styles.content}
+                onPageSelected={onPageSelected}
+                scrollEnabled={false} // Desabilita a navegação manual
+            >
                 <View key="1" style={styles.page}>
-                <Image source={require("../../assets/image1.png")} style={styles.image1} />
+                    <Image source={require("../../assets/image1.png")} style={styles.image1} />
                 </View>
                 <View key="2" style={styles.page}>
-                <Image source={require("../../assets/image2.png")} style={styles.image1} />
+                    <Image source={require("../../assets/image2.png")} style={styles.image1} />
                 </View>
                 <View key="3" style={styles.page}>
-                <Image source={require("../../assets/image3.png")} style={styles.image1} />
+                    <Image source={require("../../assets/image3.png")} style={styles.image1} />
                 </View>
             </PagerView>
             <View style={styles.bulletContent}>
-            <View style={[styles.bullet, page === 0 && styles.activeBullet]}></View>
-            <View style={[styles.bullet, page === 1 && styles.activeBullet]}></View>
-            <View style={[styles.bullet, page === 2 && styles.activeBullet]}></View>
+                <View style={[styles.bullet, page === 0 && styles.activeBullet]}></View>
+                <View style={[styles.bullet, page === 1 && styles.activeBullet]}></View>
+                <View style={[styles.bullet, page === 2 && styles.activeBullet]}></View>
             </View>
         </View>
     );
 }
 
-const styles= StyleSheet.create({
+const styles = StyleSheet.create({
     container: {
         flex: 1,
-        position:"relative",
+        position: "relative",
     },
     content: {
-        marginTop:10,
+        marginTop: 10,
         height: 150,
         alignItems: "center",
         justifyContent: "center",
@@ -46,7 +72,7 @@ const styles= StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#6b1664',
-      },
+    },
     bulletContent: {
         flexDirection: "row",
         justifyContent: "center",
@@ -61,10 +87,6 @@ const styles= StyleSheet.create({
     },
     activeBullet: {
         backgroundColor: "#000"
-    },
-    text: {
-        fontSize:20,
-        fontFamily: "bold",
     },
     image1: {
         width: "100%",

@@ -1,38 +1,27 @@
-import { Stack, useSegments, router } from "expo-router";
+import { router, Stack } from "expo-router";
+import { useEffect } from "react";
 import { AppProvider } from "../hooks";
 import { useAuth } from "../hooks/Auth";
-import { useEffect } from "react";
-
 
 const StackLayout = () => {
-  const {user} = useAuth();
-  const segments = useSegments();
+  const { user } = useAuth();
 
   useEffect(() => {
-    const inAuthGroup = segments[0] === "(protected)";
-    
-    if(!user?.autenticated && inAuthGroup) {
-      if (router.canGoBack()) {
-        router.back();
-        return;
-      } else {
-        router.replace("/");
-      }
+    if (user?.autenticated === false) {
+      router.replace("login");
     } else {
-      if(user.autenticated){
-        router.replace("(protected)")
-      }
+      router.replace("(protected)");
     }
   }, [user]);
-  
+
   return (
     <Stack>
-      <Stack.Screen name="login" options={{ headerShown: false}} />
-      <Stack.Screen name="(protected)" options={{ headerShown: false}} />
+      <Stack.Screen name="login" options={{ headerShown: false }} />
+      <Stack.Screen name="(protected)" options={{ headerShown: false }} />
+      <Stack.Screen name="about" options={{ headerShown: false }} />
     </Stack>
   );
-}
-  
+};
 export default function Layout() {
   return (
     <AppProvider>

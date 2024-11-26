@@ -29,7 +29,7 @@ export default function Home() {
 
     const handleProductPress = (product) => {
         // Navega para outra tela passando os detalhes do produto
-        navigation.navigate("ProductDetails", { product });
+        navigation.navigate("productDetails", { product });
     };
 
     const categories = ["Hidratação", "Tratamento", "Reconstrução", "Nutrição", "Finalização"];
@@ -89,6 +89,7 @@ export default function Home() {
                         <Text style={styles.emptyMessage}>Nenhum produto encontrado.</Text>
                     )}
                 />
+                <Image source={require("../../assets/oie.png")} style={styles.logo} />
             </View>
         </View>
     );
@@ -97,7 +98,7 @@ export default function Home() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#E6E6FA", // Fundo claro para separar o conteúdo
+        backgroundColor: "#efc9ee", // Fundo claro para separar o conteúdo
     },
     searchContainer: {
         flexDirection: "row",
@@ -128,11 +129,14 @@ const styles = StyleSheet.create({
     categoriasText: {
         fontSize: 18,
         fontWeight: "bold",
+        textAlign:"center",
         marginBottom: 10,
     },
     categoriasButtons: {
         flexDirection: "row",
         flexWrap: "wrap",
+        alignItems: "center",
+        justifyContent:"center",
         gap: 10,
     },
     categoryButton: {
@@ -140,7 +144,7 @@ const styles = StyleSheet.create({
         paddingVertical: 5,
         paddingHorizontal: 15,
         borderRadius: 20,
-        marginRight: 10,
+        marginRight: 1,
         marginBottom: 10,
     },
     categoryButtonActive: {

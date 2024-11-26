@@ -52,14 +52,14 @@ const DrawerLayout = () => {
           }} />
         <Drawer.Screen name='list'
           options={{
-            drawerLabel: "Listagem",
-            headerTitle: "Listagem",
+            drawerLabel: "Cabelos adicionados",
+            headerTitle: "Cabelos adicionados",
             drawerIcon: () => <Ionicons name='list-outline' size={20} color="black" />,
           }} />
-        <Drawer.Screen name='products'
+        <Drawer.Screen name='hairs'
           options={{
-            drawerLabel: "Produtos",
-            headerTitle: "Produtos",
+            drawerLabel: "Adicionar cabelo",
+            headerTitle: "Adicionar tipo de cabelo",
             drawerIcon: () => <Ionicons name='add-circle-outline' size={20} color="black" />,
           }} />
           <Drawer.Screen name='save'

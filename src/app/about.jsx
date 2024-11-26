@@ -40,7 +40,7 @@ export default function About() {
                         width: '50%',
                         alignItems: 'center',
                     }}
-                    onPress={() => { router.replace("/") }}
+                    onPress={() => { router.replace("login") }}
                 >
                     <Text style={{
                         color: '#fff',

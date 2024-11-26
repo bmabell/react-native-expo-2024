@@ -1,19 +1,19 @@
 import { useEffect, useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
-import { useProductsDatabase } from "../../database/useProductsDatabase";
+import { useHairsDatabase } from "../../database/useHairsDatabase";
 import { FlashList } from "@shopify/flash-list";
 
 export default function List() {
     const [data, setData] = useState([]); // Estado inicial como lista vazia
-    const { getProducts } = useProductsDatabase();
+    const { getHairs } = useHairsDatabase();
 
     // Função para buscar dados
     async function fetchData() {
         try {
-            const products = await getProducts();
-            setData(products);
+            const hairs = await getHairs();
+            setData(hairs);
         } catch (error) {
-            console.error("Erro ao buscar produtos:", error);
+            console.error("Erro ao buscar hairs:", error);
         }
     }
 
@@ -23,20 +23,26 @@ export default function List() {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.header}>Lista de Produtos</Text>
+            <Text style={styles.header}> </Text>
             {data.length > 0 ? (
                 <FlashList
                     data={data}
                     renderItem={({ item }) => (
                         <View style={styles.itemContainer}>
                             <Text style={styles.itemText}>ID: {item.id}</Text>
+                            <Text style={styles.itemText}>Nome: {item.nome}</Text>
+                            <Text style={styles.itemText}>Descrição: {item.descricao}</Text>
+                            <Text style={styles.itemText}>Tipo: {item.tipo}</Text>
+                            <Text style={styles.itemText}>
+                                Especificação: {item.especificacao}
+                            </Text>
                         </View>
                     )}
                     estimatedItemSize={200}
                     style={styles.list}
                 />
             ) : (
-                <Text style={styles.emptyText}>Nenhum produto encontrado</Text>
+                <Text style={styles.emptyText}>Nenhum hair encontrado</Text>
             )}
         </View>
     );
@@ -46,7 +52,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 16,
-        backgroundColor: "#f5f5f5",
+        backgroundColor: "#D8BFD8",
     },
     header: {
         fontSize: 24,

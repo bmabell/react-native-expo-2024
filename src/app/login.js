@@ -29,7 +29,7 @@ export default function App() {
     <View style={styles.container}>
       <Image source={require("../assets/hairhaven.png")} style={styles.logo} />
 
-      <Text style={styles.title}>Aplicativo Pronto Para Usar</Text>
+      <Text style={styles.title}> Seja Bem Vindo!! </Text>
       <View style={styles.inputbox}>
         <Ionicons name='mail-open-outline' size={20} color='black' />
         <TextInput style={styles.email} placeholder='E-mail' value={email} onChangeText={setEmail} />
@@ -69,7 +69,7 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#E6E6FA',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -89,12 +89,13 @@ const styles = StyleSheet.create({
   buttonText: {
     color: '#fff',
     fontSize: 16,
+    fontFamily: "regular",
   },
   inputbox: {
     flexDirection: 'row',
     gap: 10,
     marginHorizontal: 40,
-    marginVertical: 10,
+    marginVertical: 13,
     alignItems: 'center',
     borderColor: 'black',
     borderWidth: 1,
