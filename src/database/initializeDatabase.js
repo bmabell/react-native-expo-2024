@@ -2,7 +2,7 @@ export async function initializeDatabase(database) {
     try {
         await database.execAsync(`
             DROP TABLE IF EXISTS users;
-            DROP TABLE IF EXISTS products;
+            DROP TABLE IF EXISTS hairs;
 
             CREATE TABLE IF NOT EXISTS users (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -14,15 +14,13 @@ export async function initializeDatabase(database) {
                 updated_at DATE
             );
 
-            CREATE TABLE IF NOT EXISTS products (
+            CREATE TABLE IF NOT EXISTS hairs (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 user_id INTEGER NOT NULL,
                 user_cadastro INTEGER NOT NULL,
                 nome TEXT,
                 descricao TEXT,
-                peso REAL NOT NULL,
-                marca TEXT,
-                categoria TEXT,
+                tipo TEXT,
                 especificacao TEXT,
                 created_at DATE NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 updated_at DATE,

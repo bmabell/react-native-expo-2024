@@ -9,16 +9,16 @@ export default function Home() {
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [data, setData] = useState([
-        { id: "1", title: "Shampoo e Condicionador", price: 29.99, image: "https://via.placeholder.com/150", category: "Hidratação" },
-        { id: "2", title: "Tônico Capilar", price: 39.99, image: "https://via.placeholder.com/150", category: "Tratamento" },
-        { id: "3", title: "Máscara de Tratamento", price: 49.99, image: "https://via.placeholder.com/150", category: "Hidratação" },
-        { id: "4", title: "Acidificador", price: 19.99, image: "https://via.placeholder.com/150", category: "Reconstrução" },
-        { id: "5", title: "Pré-poo", price: 24.99, image: "https://via.placeholder.com/150", category: "Hidratação" },
-        { id: "6", title: "Óleo Capilar", price: 14.99, image: "https://via.placeholder.com/150", category: "Nutrição" },
-        { id: "7", title: "Leave-in", price: 34.99, image: "https://via.placeholder.com/150", category: "Finalização" },
-        { id: "8", title: "Spray Fixador", price: 22.99, image: "https://via.placeholder.com/150", category: "Finalização" },
-        { id: "9", title: "Serum Reparador", price: 29.99, image: "https://via.placeholder.com/150", category: "Tratamento" },
-        { id: "10", title: "Protetor Térmico", price: 39.99, image: "https://via.placeholder.com/150", category: "Finalização" },
+        { id: "1", title: "Shampoo e Condicionador", image: "https://cdn.awsli.com.br/2500x2500/1994/1994328/produto/165681754/fd767288d0.jpg", category: "Hidratação" },
+        { id: "2", title: "Tônico Capilar", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQbinkjvUR--qo1IOHj4NkFnkhg1NxnGlHPww&s", category: "Tratamento" },
+        { id: "3", title: "Máscara de Tratamento", image: "https://cdn.awsli.com.br/1279/1279312/produto/62651762/a77c0267e9.jpg", category: "Hidratação" },
+        { id: "4", title: "Acidificante", image: "https://d2l4mdyojly1ma.cloudfront.net/Custom/Content/Products/45/58/45585_densidade-acidificante-250g-ps-19629-55_z7_638621808059926446.webp", category: "Reconstrução" },
+        { id: "5", title: "Pré-poo", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRcYPbQgfKZRaVq6BXcCuZo1_0k7uBbPPzV1Q&s", category: "Hidratação" },
+        { id: "6", title: "Óleo Capilar", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS2_6wQwrAx5KEv3Cdo7bNQGSW67CGIWdcU1A&s", category: "Nutrição" },
+        { id: "7", title: "Leave-in", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQQxpZE2WYAuPllqCXFB6-RxuL9P3AkUKgvvg&s", category: "Finalização" },
+        { id: "8", title: "Spray Fixador", image: "https://product-data.raiadrogasil.io/images/3673924.webp", category: "Finalização" },
+        { id: "9", title: "Serum Reparador", image: "https://foreverliss.vtexassets.com/arquivos/ids/171679/ForeverLiss_DesmaiaCabelo_Serum.jpg?v=638610735448930000", category: "Tratamento" },
+        { id: "10", title: "Protetor Térmico", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQZsAAMeT57OIwsnH76QWMGxsu_BGexqbdS5Q&s", category: "Finalização" },
     ]);
 
     const filteredData = data.filter((item) => {
@@ -47,49 +47,48 @@ export default function Home() {
                 <Icon name="search" size={20} style={styles.searchIcon} />
             </View>
             <View style={styles.produtinhos}>
-            <View style={styles.categoriasContainer}>
-                <Text style={styles.categoriasText}>O que está procurando?</Text>
-                <View style={styles.categoriasButtons}>
-                    {categories.map((category) => (
-                        <TouchableOpacity
-                            key={category}
-                            style={[
-                                styles.categoryButton,
-                                selectedCategory === category && styles.categoryButtonActive,
-                            ]}
-                            onPress={() => setSelectedCategory(category === selectedCategory ? null : category)}
-                        >
-                            <Text
+                <View style={styles.categoriasContainer}>
+                    <Text style={styles.categoriasText}>O que está procurando?</Text>
+                    <View style={styles.categoriasButtons}>
+                        {categories.map((category) => (
+                            <TouchableOpacity
+                                key={category}
                                 style={[
-                                    styles.categoryButtonText,
-                                    selectedCategory === category && styles.categoryButtonTextActive,
+                                    styles.categoryButton,
+                                    selectedCategory === category && styles.categoryButtonActive,
                                 ]}
+                                onPress={() => setSelectedCategory(category === selectedCategory ? null : category)}
                             >
-                                {category}
-                            </Text>
-                        </TouchableOpacity>
-                    ))}
+                                <Text
+                                    style={[
+                                        styles.categoryButtonText,
+                                        selectedCategory === category && styles.categoryButtonTextActive,
+                                    ]}
+                                >
+                                    {category}
+                                </Text>
+                            </TouchableOpacity>
+                        ))}
+                    </View>
                 </View>
-            </View>
-            <FlatList
-                data={filteredData}
-                keyExtractor={(item) => item.id}
-                numColumns={3}
-                contentContainerStyle={styles.productList}
-                renderItem={({ item }) => (
-                    <TouchableOpacity
-                        style={styles.productCard}
-                        onPress={() => handleProductPress(item)}
-                    >
-                        <Image source={{ uri: item.image }} style={styles.productImage} />
-                        <Text style={styles.productTitle}>{item.title}</Text>
-                        <Text style={styles.productPrice}>R$ {item.price.toFixed(2)}</Text>
-                    </TouchableOpacity>
-                )}
-                ListEmptyComponent={() => (
-                    <Text style={styles.emptyMessage}>Nenhum produto encontrado.</Text>
-                )}
-            />
+                <FlatList
+                    data={filteredData}
+                    keyExtractor={(item) => item.id}
+                    numColumns={3}
+                    contentContainerStyle={styles.productList}
+                    renderItem={({ item }) => (
+                        <TouchableOpacity
+                            style={styles.productCard}
+                            onPress={() => handleProductPress(item)}
+                        >
+                            <Image source={{ uri: item.image }} style={styles.productImage} />
+                            <Text style={styles.productTitle}>{item.title}</Text>
+                        </TouchableOpacity>
+                    )}
+                    ListEmptyComponent={() => (
+                        <Text style={styles.emptyMessage}>Nenhum produto encontrado.</Text>
+                    )}
+                />
             </View>
         </View>
     );
@@ -183,11 +182,6 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         textAlign: "center",
         marginBottom: 5,
-    },
-    productPrice: {
-        fontSize: 12,
-        color: "green",
-        marginBottom: 10,
     },
     emptyMessage: {
         textAlign: "center",
